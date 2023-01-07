@@ -69,7 +69,7 @@ router.get('/', (req, res) => {
     FROM
         suppliers 
     WHERE
-        ${condition} LIMIT 1;`,
+        ${condition};`,
     async (err, result) => {
         if (err) throw err;
         response_data = result.rows;
