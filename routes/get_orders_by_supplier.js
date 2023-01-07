@@ -31,11 +31,3 @@ router.get('/', (req, res) => {
 })
 
 module.exports = router;
-/*
-select *
-from (select st_union(order_sup.geom) order_geom
-      from ((select * from products where supplier_id = 483) pl left join orders od
-            on pl.product_id = od.product_id) order_sup
-               inner join taiwan_city tc on st_within(order_sup.geom, tc.geom)
-      group by order_sup.geom) dis
-*/

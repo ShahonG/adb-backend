@@ -90,6 +90,7 @@ router.get('/', (req, res) => {
                 console.log(e);
             }
         }
+        res.send(response_data);
     })
 })
 

@@ -37,7 +37,8 @@ router.get('/', (req, res) => {
         co.supplier_id = ${supplier_id} AND EXTRACT(MONTH FROM cancel_date::timestamp) BETWEEN ${left} AND ${right};`,
     (err, result) => {
         if (err) throw err;
-        console.log(result.rows)
+        console.log(result.rows);
+        res.send(response_data);
     })
 })
 

@@ -48,6 +48,7 @@ router.get('/', (req, res) => {
     (err, result) => {
         if (err) throw err;
         console.log(result.rows);
+        res.send(result.rows);
     })
 })
 

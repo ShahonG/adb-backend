@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
         sp.district`,
     (err, result) => {
         if (err) throw err;
-        res.send(result.rows)
+        res.send(result.rows);
     })
 })
 
