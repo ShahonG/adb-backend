@@ -4,10 +4,10 @@ const client = require("../databases/databases").pgClient;
 function build_query(option, type) {
   var condition = undefined;
   if (type == "city") {
-    condition = `city = '${option}'`;
+    condition = ` s.city = '${option}'`;
   }
   if (type == "district") {
-    condition = `district = '${option}'`;
+    condition = ` s.district = '${option}'`;
   }
 
   return `
@@ -15,8 +15,8 @@ function build_query(option, type) {
             rg.supplier_id,
             supplier_name,
             s.address,
-            s.longitude,
-            s.latitude
+            s.longitude::float,
+            s.latitude::float
         FROM
             return_goods rg 
             INNER JOIN suppliers s ON rg.supplier_id = s.supplier_id
@@ -70,12 +70,13 @@ router.get("/", (req, res) => {
   var option = undefined;
   var query_sentence = undefined;
   var response_data = undefined;
-  if (req.query.city) {
-    option = req.query.city;
-    query_sentence = build_query(option, "city");
-  } else if (req.query.district) {
-    option = req.query.district;
+
+  if (req.query.district.trim()) {
+    option = req.query.district.trim();
     query_sentence = build_query(option, "district");
+  } else if (req.query.city.trim()) {
+    option = req.query.city.trim();
+    query_sentence = build_query(option, "city");
   }
 
   console.log("### 2");
@@ -95,7 +96,6 @@ router.get("/", (req, res) => {
           response_data[i],
           response_data[i].supplier_id
         );
-        // console.log(response_data[i]);
       } catch (e) {
         console.log(e);
       }

@@ -35,7 +35,6 @@ app.use(
   require("./routes/get_orders_by_supplier.js")
 );
 app.use("/get_suppliers_list", require("./routes/get_suppliers_list.js"));
-
 app.listen(port, () => {
   console.log(`Success, view the app at http://localhost:${port}`);
 });

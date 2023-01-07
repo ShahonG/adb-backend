@@ -4,10 +4,10 @@ const client = require("../databases/databases").pgClient;
 function build_query(option, type) {
   var condition = undefined;
   if (type == "city") {
-    condition = `city = '${option}'`;
+    condition = ` s.city = '${option}'`;
   }
   if (type == "district") {
-    condition = `district = '${option}'`;
+    condition = ` s.district = '${option}'`;
   }
 
   return `
@@ -15,13 +15,13 @@ function build_query(option, type) {
         co.supplier_id,
         supplier_name,
         s.address,
-        s.longitude,
-        s.latitude
+        s.longitude::float,
+        s.latitude::float
     FROM
         cancel_orders co
         INNER JOIN suppliers s ON co.supplier_id = s.supplier_id
     WHERE
-        ${condition};`;
+        ${condition} limit 20;`;
 }
 
 async function merge_top_product(data, supplier_id) {
@@ -69,13 +69,14 @@ router.get("/", (req, res) => {
   var option = undefined;
   var query_sentence = undefined;
   var response_data = undefined;
-  if (req.query.city) {
-    option = req.query.city;
-    query_sentence = build_query(option, "city");
-  } else if (req.query.district) {
-    option = req.query.district;
+  if (req.query.district.trim()) {
+    option = req.query.district.trim();
     query_sentence = build_query(option, "district");
+  } else if (req.query.city.trim()) {
+    option = req.query.city.trim();
+    query_sentence = build_query(option, "city");
   }
+
   client.query(query_sentence, async (err, result) => {
     if (err) throw err;
     response_data = result.rows;

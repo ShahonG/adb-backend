@@ -22,7 +22,7 @@ async function merge_delay_info(data, supplier_id) {
       }
     }
     data.delay_ratio = (delay / len) * 100.0;
-    data.transaction_info = delay_infos.rows;
+    // data.transaction_info = delay_infos.rows;
     return data;
   } catch (e) {
     console.log(e);
@@ -56,41 +56,44 @@ async function merge_top_product(data, supplier_id) {
 router.get("/", (req, res) => {
   var response_data = undefined;
   var condition = undefined;
-  if (req.query.city) {
-    condition = `city = '${req.query.city}'`;
-  } else if (req.query.district) {
-    condition = `district = ${req.query.district}`;
+  if (req.query.district.trim()) {
+    condition = ` district = '${req.query.district.trim()}'`;
+  } else if (req.query.city.trim()) {
+    condition = ` city = '${req.query.city.trim()}'`;
   }
 
-  client.query(
-    `
-    SELECT
-        supplier_id, supplier_name, address, longitude, latitude
-    FROM
-        suppliers 
-    WHERE
-        ${condition};`,
-    async (err, result) => {
-      if (err) throw err;
-      response_data = result.rows;
-      for (var i = 0; i < response_data.length; i++) {
-        try {
-          response_data[i] = await merge_delay_info(
-            response_data[i],
-            response_data[i].supplier_id
-          );
-          response_data[i] = await merge_top_product(
-            response_data[i],
-            response_data[i].supplier_id
-          );
-          console.log(response_data[i]);
-        } catch (e) {
-          console.log(e);
-        }
+  var query = `SELECT supplier_id, supplier_name, address, longitude::float, latitude::float
+      FROM
+      suppliers 
+      WHERE 1=1 `;
+
+  if (condition) {
+    query += ` AND ${condition}`;
+  }
+
+  query += `LIMIT 20;`;
+
+  console.log(query);
+
+  client.query(query, async (err, result) => {
+    if (err) throw err;
+    response_data = result.rows;
+    for (var i = 0; i < response_data.length; i++) {
+      try {
+        response_data[i] = await merge_delay_info(
+          response_data[i],
+          response_data[i].supplier_id
+        );
+        response_data[i] = await merge_top_product(
+          response_data[i],
+          response_data[i].supplier_id
+        );
+      } catch (e) {
+        console.log(e);
       }
-      res.send(response_data);
     }
-  );
+    res.send(response_data);
+  });
 });
 
 module.exports = router;

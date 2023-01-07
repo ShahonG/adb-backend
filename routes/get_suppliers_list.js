@@ -3,8 +3,6 @@ const client = require("../databases/databases").pgClient;
 
 router.get("/", (req, res) => {
   const region = req.query.city;
-  console.log(req.query.district);
-  console.log(region);
   client.query(
     `
     SELECT 
