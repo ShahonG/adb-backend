@@ -8,10 +8,10 @@ const driver = neo4j.driver(
 
 const { Client } = require('pg')
 const pgClient = new Client({
-    user: "postgres",
+    user: "kneskung",
     host: "localhost",
-    database: "adb",
-    password: "190322",
+    database: "taiwan_map",
+    password: "",
     port: "5432",
 });
 
