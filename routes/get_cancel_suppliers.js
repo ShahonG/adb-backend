@@ -3,12 +3,13 @@ const client = require("../databases/databases").pgClient;
 
 function build_query(option, type) {
   var condition = undefined;
-  if (type == "city") {
-    condition = ` s.city = '${option}'`;
-  }
   if (type == "district") {
     condition = ` s.district = '${option}'`;
   }
+ else if (type == "city") {
+    condition = ` s.city = '${option}'`;
+  }
+
 
   return `
     SELECT

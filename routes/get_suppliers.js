@@ -71,7 +71,7 @@ router.get("/", (req, res) => {
     query += ` AND ${condition}`;
   }
 
-  query += `LIMIT 20;`;
+  query += ` LIMIT 20;`;
 
   console.log(query);
 
