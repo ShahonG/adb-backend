@@ -1,29 +1,27 @@
-const router = require('express').Router();
-const client = require('../databases/databases').pgClient
+const router = require("express").Router();
+const client = require("../databases/databases").pgClient;
 
-router.get('/', (req, res) => {
-    const season = req.query.season;
-    const supplier_id = req.query.supplier_id;
-    const radius = req.query.radius;
-    var left = undefined;
-    var right = undefined;
-    if(season == 'spring'){
-        left = 1;
-        right = 3
-    }
-    else if(season == 'summer'){
-        left = 4;
-        right = 6;
-    }
-    else if(season == 'autumn'){
-        left = 7;
-        right = 9;
-    }
-    else if(season == 'winter'){
-        left = 10;
-        right = 12;
-    }
-    client.query(`
+router.get("/", (req, res) => {
+  const season = req.query.season;
+  const supplier_id = req.query.supplier_id;
+  const radius = req.query.radius;
+  var left = undefined;
+  var right = undefined;
+  if (season == "spring") {
+    left = 1;
+    right = 3;
+  } else if (season == "summer") {
+    left = 4;
+    right = 6;
+  } else if (season == "autumn") {
+    left = 7;
+    right = 9;
+  } else if (season == "winter") {
+    left = 10;
+    right = 12;
+  }
+  client.query(
+    `
     SELECT 
         DISTINCT 
         o.rs_number,
@@ -47,10 +45,11 @@ router.get('/', (req, res) => {
         AND o.supplier_id = ${supplier_id}
         AND EXTRACT(MONTH FROM order_create_date::timestamp) BETWEEN ${left} AND ${right}`,
     (err, result) => {
-        if (err) throw err;
-        console.log(result.rows);
-        res.send(result.rows);
-    })
-})
+      if (err) throw err;
+      console.log(result.rows);
+      res.send(result.rows);
+    }
+  );
+});
 
 module.exports = router;

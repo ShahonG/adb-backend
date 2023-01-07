@@ -1,11 +1,12 @@
-const router = require('express').Router();
-const client = require('../databases/databases').pgClient
+const router = require("express").Router();
+const client = require("../databases/databases").pgClient;
 
-router.get('/', (req, res) => {
-    const region = req.query.city
-    console.log(req.query.district);
-    console.log(region);
-    client.query(`
+router.get("/", (req, res) => {
+  const region = req.query.city;
+  console.log(req.query.district);
+  console.log(region);
+  client.query(
+    `
     SELECT 
         sp.supplier_id, sp.supplier_name, sp.latitude, sp.longitude
     FROM
@@ -18,9 +19,10 @@ router.get('/', (req, res) => {
         tc.geom, tc.countyname,
         sp.geom, sp.supplier_id, sp.supplier_name, sp.latitude, sp.longitude;`,
     (err, result) => {
-        if (err) throw err;
-        res.send(result.rows);
-    })
-})
+      if (err) throw err;
+      res.send(result.rows);
+    }
+  );
+});
 
 module.exports = router;

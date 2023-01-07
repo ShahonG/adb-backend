@@ -1,9 +1,10 @@
-const router = require('express').Router();
-const client = require('../databases/databases').pgClient
+const router = require("express").Router();
+const client = require("../databases/databases").pgClient;
 
-router.get('/', (req, res) => {
-    const supplier_id = req.query.supplier_id
-    client.query(`
+router.get("/", (req, res) => {
+  const supplier_id = req.query.supplier_id;
+  client.query(
+    `
     SELECT *
     FROM 
     (
@@ -22,12 +23,12 @@ router.get('/', (req, res) => {
             ) order_sup
             INNER JOIN taiwan_city tc ON st_within(order_sup.geom, tc.geom)
       GROUP BY order_sup.geom
-    ) dis`
-    ,
+    ) dis`,
     (err, result) => {
-        if (err) throw err;
-        res.send(result.rows);
-    })
-})
+      if (err) throw err;
+      res.send(result.rows);
+    }
+  );
+});
 
 module.exports = router;

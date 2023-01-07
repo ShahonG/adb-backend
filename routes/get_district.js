@@ -1,9 +1,10 @@
-const router = require('express').Router();
-const client = require('../databases/databases').pgClient
+const router = require("express").Router();
+const client = require("../databases/databases").pgClient;
 
-router.get('/', (req, res) => {
-    const city = req.query.city;
-    client.query(`
+router.get("/", (req, res) => {
+  const city = req.query.city;
+  client.query(
+    `
     SELECT
         sp.district, COUNT(*)
     FROM 
@@ -13,9 +14,10 @@ router.get('/', (req, res) => {
     GROUP BY
         sp.district`,
     (err, result) => {
-        if (err) throw err;
-        res.send(result.rows);
-    })
-})
+      if (err) throw err;
+      res.send(result.rows);
+    }
+  );
+});
 
 module.exports = router;
