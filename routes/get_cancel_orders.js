@@ -28,6 +28,7 @@ router.get("/", (req, res) => {
   var query = `SELECT
           co.rg_number,
           co.cancel_reason,
+          o.product_id,
           o.product_name,
           co.address,
           co.latitude::float,

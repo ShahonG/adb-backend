@@ -3,9 +3,9 @@ const client = require("../databases/databases").pgClient;
 
 function build_condition(city, district) {
   if (district) {
-    return `district = '${district}'`;
+    return ` o.district = '${district}'`;
   } else if (city) {
-    return `city = '${city}'`;
+    return ` o.city = '${city}'`;
   }
 }
 
@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
   if (condition) {
     query+= ` AND ${condition}`
   }
-  
+
   if (!is_no_season) {
     query += ` AND EXTRACT(MONTH FROM order_create_date::timestamp) BETWEEN ${left} AND ${right}`;
   }
