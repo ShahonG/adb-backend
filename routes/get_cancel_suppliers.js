@@ -22,7 +22,7 @@ function build_query(option, type) {
         cancel_orders co
         INNER JOIN suppliers s ON co.supplier_id = s.supplier_id
     WHERE
-        ${condition} limit 20;`;
+        ${condition} limit 50;`;
 }
 
 async function merge_top_product(data, supplier_id) {

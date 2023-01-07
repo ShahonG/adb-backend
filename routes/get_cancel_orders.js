@@ -37,10 +37,10 @@ router.get("/", (req, res) => {
   INNER JOIN orders o ON co.rg_number = o.rg_number
   JOIN suppliers s
   ON ST_DWithin(
-      Geography(ST_MakePoint(o.longitude, o.latitude)),
+      Geography(ST_MakePoint(co.longitude, co.latitude)),
       Geography(ST_MakePoint(s.longitude, s.latitude)),
       ${radius})
-      AND o.supplier_id = s.supplier_id
+      AND co.supplier_id = s.supplier_id
   WHERE
     co.supplier_id = ${supplier_id} `;
 
