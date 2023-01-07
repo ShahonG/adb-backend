@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const client = require('../databases/databases').pgClient
 
-async function merge_delay_ratio(supplier_id) {
+async function merge_delay_info(data, supplier_id) {
     try {
         const delay_infos = await client.query(`
         SELECT
+            DISTINCT o.rg_number,
+            o.product_id,
+            o.product_name,
             EXTRACT(DAYS FROM o.shipment_date::TIMESTAMP - o.latest_shipment_date::TIMESTAMP)::NUMERIC(9, 2) AS delay
         FROM
             orders o
@@ -18,7 +21,9 @@ async function merge_delay_ratio(supplier_id) {
                 delay++;
             }
         }
-        return delay / len;
+        data.delay_ratio = (delay / len) * 100.0;
+        data.transaction_info = delay_infos.rows;
+        return data;
     } catch (e) {
         console.log(e);
     }
@@ -64,15 +69,15 @@ router.get('/', (req, res) => {
     FROM
         suppliers 
     WHERE
-        ${condition};`,
+        ${condition} LIMIT 1;`,
     async (err, result) => {
         if (err) throw err;
         response_data = result.rows;
         for(var i = 0 ; i < response_data.length ; i++){
             try {
-                response_data[i].delay_ratio = await merge_delay_ratio(response_data[i].supplier_id);
+                response_data[i] = await merge_delay_info(response_data[i], response_data[i].supplier_id);
                 response_data[i] = await merge_top_product(response_data[i], response_data[i].supplier_id);
-                // console.log(response_data[i]);
+                console.log(response_data[i]);
             } catch (e) {
                 console.log(e);
             }
